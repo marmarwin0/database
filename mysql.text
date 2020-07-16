@@ -1,0 +1,182 @@
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 17
+Server version: 8.0.21 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mmwin              |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use mmwin;
+Database changed
+mysql> show tables;
++-----------------+
+| Tables_in_mmwin |
++-----------------+
+| player          |
+| team            |
++-----------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from team;
++-----+-----------+-------------+
+| tid | name      | foundeddate |
++-----+-----------+-------------+
+| t1  | menu      | 2002-01-01  |
+| t2  | chelsa    | 2003-01-01  |
+| t3  | arsenal   | 2004-01-01  |
+| t4  | napoli    | 2005-02-02  |
+| t5  | malaysia  | 2006-03-05  |
+| t6  | liverpool | 2007-02-02  |
+| t7  | tailand   | 2008-04-03  |
+| t8  | korea     | 2009-03-03  |
++-----+-----------+-------------+
+8 rows in set (0.00 sec)
+
+mysql> select * from player;
++-----+----------------+---------+------+----------+--------+------+
+| pid | name           | jersyno | age  | salary   | height | tid  |
++-----+----------------+---------+------+----------+--------+------+
+| p1  | Aung thu       |      11 |   22 |  1000000 |      6 | t1   |
+| p2  | Oscar          |      12 |   22 |  2800000 |      6 | t2   |
+| p3  | Xavi           |      10 |   23 |  2060000 |      6 | t3   |
+| p4  | Lionel Messi   |       7 |   25 |  2000000 |      7 | t4   |
+| p5  | Andres Iniesta |       6 |   27 | 10800000 |      7 | t5   |
++-----+----------------+---------+------+----------+--------+------+
+5 rows in set (0.00 sec)
+
+mysql> select * from team where tid="t2";
++-----+--------+-------------+
+| tid | name   | foundeddate |
++-----+--------+-------------+
+| t2  | chelsa | 2003-01-01  |
++-----+--------+-------------+
+1 row in set (0.06 sec)
+
+mysql> select * from team where tid="t1";
++-----+------+-------------+
+| tid | name | foundeddate |
++-----+------+-------------+
+| t1  | menu | 2002-01-01  |
++-----+------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from team where tid="t5";
++-----+----------+-------------+
+| tid | name     | foundeddate |
++-----+----------+-------------+
+| t5  | malaysia | 2006-03-05  |
++-----+----------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Player where Salary>500000;
++-----+----------------+---------+------+----------+--------+------+
+| pid | name           | jersyno | age  | salary   | height | tid  |
++-----+----------------+---------+------+----------+--------+------+
+| p1  | Aung thu       |      11 |   22 |  1000000 |      6 | t1   |
+| p2  | Oscar          |      12 |   22 |  2800000 |      6 | t2   |
+| p3  | Xavi           |      10 |   23 |  2060000 |      6 | t3   |
+| p4  | Lionel Messi   |       7 |   25 |  2000000 |      7 | t4   |
+| p5  | Andres Iniesta |       6 |   27 | 10800000 |      7 | t5   |
++-----+----------------+---------+------+----------+--------+------+
+5 rows in set (0.10 sec)
+
+mysql> select Name,(select SUM(salary) from player where player.tid=team.tid) as salary from team;
++-----------+----------+
+| Name      | salary   |
++-----------+----------+
+| menu      |  1000000 |
+| chelsa    |  2800000 |
+| arsenal   |  2060000 |
+| napoli    |  2000000 |
+| malaysia  | 10800000 |
+| liverpool |     NULL |
+| tailand   |     NULL |
+| korea     |     NULL |
++-----------+----------+
+8 rows in set (0.02 sec)
+
+mysql>  select * from player where height<6;
+Empty set (0.00 sec)
+
+mysql>  select * from Player where height>5;
++-----+----------------+---------+------+----------+--------+------+
+| pid | name           | jersyno | age  | salary   | height | tid  |
++-----+----------------+---------+------+----------+--------+------+
+| p1  | Aung thu       |      11 |   22 |  1000000 |      6 | t1   |
+| p2  | Oscar          |      12 |   22 |  2800000 |      6 | t2   |
+| p3  | Xavi           |      10 |   23 |  2060000 |      6 | t3   |
+| p4  | Lionel Messi   |       7 |   25 |  2000000 |      7 | t4   |
+| p5  | Andres Iniesta |       6 |   27 | 10800000 |      7 | t5   |
++-----+----------------+---------+------+----------+--------+------+
+5 rows in set (0.00 sec)
+
+mysql>  select * from Player where height<7;
++-----+----------+---------+------+---------+--------+------+
+| pid | name     | jersyno | age  | salary  | height | tid  |
++-----+----------+---------+------+---------+--------+------+
+| p1  | Aung thu |      11 |   22 | 1000000 |      6 | t1   |
+| p2  | Oscar    |      12 |   22 | 2800000 |      6 | t2   |
+| p3  | Xavi     |      10 |   23 | 2060000 |      6 | t3   |
++-----+----------+---------+------+---------+--------+------+
+3 rows in set (0.00 sec)
+
+mysql> select name,(select AVG(salary) from player where player.tid=team.tid) as Average_salary from team;
++-----------+----------------+
+| name      | Average_salary |
++-----------+----------------+
+| menu      |   1000000.0000 |
+| chelsa    |   2800000.0000 |
+| arsenal   |   2060000.0000 |
+| napoli    |   2000000.0000 |
+| malaysia  |  10800000.0000 |
+| liverpool |           NULL |
+| tailand   |           NULL |
+| korea     |           NULL |
++-----------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> select name,salary from player where salary in (select max(salary) from player);
++----------------+----------+
+| name           | salary   |
++----------------+----------+
+| Andres Iniesta | 10800000 |
++----------------+----------+
+1 row in set (0.12 sec)
+
+mysql> select name,salary from player where salary in (select min(salary) from player);
++----------+---------+
+| name     | salary  |
++----------+---------+
+| Aung thu | 1000000 |
++----------+---------+
+1 row in set (0.00 sec)
+
+mysql> select * from player where Age>30 and salary>200000;
+Empty set (0.00 sec)
+
+mysql> select * from Player where Age>25 and Salary>200000;
++-----+----------------+---------+------+----------+--------+------+
+| pid | name           | jersyno | age  | salary   | height | tid  |
++-----+----------------+---------+------+----------+--------+------+
+| p5  | Andres Iniesta |       6 |   27 | 10800000 |      7 | t5   |
++-----+----------------+---------+------+----------+--------+------+
+1 row in set (0.00 sec)
+
+mysql>
